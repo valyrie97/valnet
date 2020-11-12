@@ -9,6 +9,9 @@ function update() {
 	if(remoteHash !== localHash) {
 		log.info('remote hash:', remoteHash);
 		log.info('local hash: ', localHash);
+
+		execSync(`git fetch`, { stdio: "inherit" });
+		execSync(`git pull`, { stdio: "inherit" });
 		process.exit(2);
 	}
 }
@@ -16,7 +19,7 @@ function update() {
 
 
 
-require('./index.js');
+// require('./index.js');
 
 setInterval(update, 5000);
 
