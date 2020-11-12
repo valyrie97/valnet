@@ -10,12 +10,7 @@ setInterval(function update() {
 	if(remoteHash !== localHash) {
 		log.info('remote hash:', remoteHash);
 		log.info('local hash: ', localHash);
-		log.info('attempting to fetch new version');
 
-		execSync(`git fetch`);
-		execSync(`git pull`);
-		execSync(`yarn`);
-		
 		log.info('killing relay...');
 		try {
 			proc.kill();
@@ -30,7 +25,14 @@ setInterval(function update() {
 	proc = spawn('node', ['relay'], { stdio: "inherit" });
 
 	proc.on('exit', () => {
-		log.info('relay exitted, restarting...');
+		log.info('relay exitted');
+		log.info('attempting to fetch new version');
+
+		execSync(`git fetch`);
+		execSync(`git pull`);
+		execSync(`yarn`);
+
+		log.info('restarting...')
 		setTimeout(() => {
 			keepAlive();
 		}, 1000);
