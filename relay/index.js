@@ -1,9 +1,9 @@
 const { title } = require('../lib/title');
 const net = require('net');
-const log = require('signale');
+const log = require('signale').scope('relay');
 const { config } = require('./../package.json');
 
-// title('relay');
+title('relay', false);
 
 // let connection = null;
 

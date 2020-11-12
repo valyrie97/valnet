@@ -1,5 +1,5 @@
 (() => {
-const log = require('signale');
+const log = require('signale').scope('service');
 const { execSync, spawn } = require('child_process');
 const branch = 'master';
 let proc;
