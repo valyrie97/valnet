@@ -21,8 +21,11 @@ title('relay', false);
 // 	})
 // })();
 
+const express = require('express');
+const app = express();
 
-log.debug('I AM RELAY!');
-setTimeout(() => {
-	log.debug('this is a test output...');
-}, 1000)
+app.get('/', (req, res) => {
+	res.end(Date.now().toString());
+})
+
+app.listen(9999);

@@ -14,6 +14,8 @@ setInterval(function update() {
 
 		execSync(`git fetch`);
 		execSync(`git pull`);
+		execSync(`yarn`);
+		
 		log.info('killing relay...');
 		try {
 			proc.kill();
