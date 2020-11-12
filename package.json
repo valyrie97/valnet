@@ -17,7 +17,7 @@
     "client:b": "supervisor -w client,lib -n exit -- client/index.js --profile LsE8OnVzr1iYrkT0"
   },
   "dependencies": {
-    "font-ascii": "./../font-ascii",
+    "font-ascii": "^1.2.1",
     "gradient-string": "^1.2.0",
     "human-readable-ids": "^1.0.4",
     "keyv": "^4.0.3",
