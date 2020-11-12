@@ -19,7 +19,7 @@ function update() {
 
 
 
-// require('./index.js');
+require('./index.js');
 
 setInterval(update, 5000);
 
