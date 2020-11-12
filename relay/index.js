@@ -22,4 +22,7 @@ title('relay');
 // })();
 
 
-setTimeout(() => {}, 1000)
+setTimeout(() => {
+	log.debug('this is a test output...')
+	setTimeout(() => {}, 1000)
+}, 1000)

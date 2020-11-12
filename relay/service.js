@@ -9,9 +9,11 @@ function update() {
 	if(remoteHash !== localHash) {
 		log.info('remote hash:', remoteHash);
 		log.info('local hash: ', localHash);
+		log.info('attempting to fetch new version');
 
-		execSync(`git fetch`, { stdio: "inherit" });
-		execSync(`git pull`, { stdio: "inherit" });
+		execSync(`git fetch`);
+		execSync(`git pull`);
+		log.info('restarting relay...');
 		process.exit(2);
 	}
 }
