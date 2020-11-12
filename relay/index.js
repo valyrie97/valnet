@@ -3,7 +3,7 @@ const net = require('net');
 const log = require('signale');
 const { config } = require('./../package.json');
 
-title('relay');
+// title('relay');
 
 // let connection = null;
 
@@ -22,9 +22,7 @@ title('relay');
 // })();
 
 
+log.debug('I AM RELAY!');
 setTimeout(() => {
-	log.debug('this is a test output...')
-	setTimeout(() => {
-		log.debug('so we never process exit?')
-	}, 1000)
+	log.debug('this is a test output...');
 }, 1000)
