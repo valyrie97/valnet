@@ -7,6 +7,9 @@
     "ports": {
       "ns": 5500,
       "relay": 5600
+    },
+    "addresses": {
+      "relay": "valnet.xyz"
     }
   },
   "scripts": {
