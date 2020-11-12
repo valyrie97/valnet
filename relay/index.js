@@ -24,5 +24,7 @@ title('relay');
 
 setTimeout(() => {
 	log.debug('this is a test output...')
-	setTimeout(() => {}, 1000)
+	setTimeout(() => {
+		process.exit(0);
+	}, 1000)
 }, 1000)
