@@ -28,7 +28,7 @@ setInterval(function update() {
 	proc = spawn('node', ['relay'], { stdio: "inherit" });
 
 	proc.on('exit', () => {
-		log.info('restarting relay...');
+		log.info('relay exitted, restarting...');
 		setTimeout(() => {
 			keepAlive();
 		}, 1000);
