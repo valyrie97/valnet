@@ -6,9 +6,9 @@ const { config } = require('../package.json');
 const { Identity } = require('../lib/Identity');
 const stp = require('../lib/STP');
 title('relay', false);
-
 const identity = await new Identity('relay', 'default');
 
+const clients = [];
 
 // ==================================== [STP CLIENT]
 let client = null;
@@ -26,31 +26,38 @@ let client = null;
 		log.debug(data.toString());
 	})
 })();
-// stp.connect(config.ports.relay, config.addresses.relay);
-
-
 
 // ==================================== [STP SERVER]
 const server = stp.createServer(identity, (client) => {
 	log.info(`incomming connection from ${client.remoteAddress}
 	${client.remoteIdentity}`);
-});
 
+	clients.push(client);
+
+	client.on('close', pruneClients);
+});
 server.listen(config.ports.relay);
 log.success(`STP server listening on ${config.ports.relay}`);
 
-
-
-
-
-
+function pruneClients() {
+	clients = clients.filter(client => client.open);
+}
 
 // ==================================== [EXPRESS]
 const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {
-	res.end(Date.now().toString());
+	res.end(`
+		<table>
+		${clients.map(client => `
+			<tr>
+				<td>${client.remoteAddress}</td>
+				<td>${client.remoteIdentity}</td>
+			</tr>
+		`)}
+		</table>
+	`);
 })
 
 app.listen(9999);
