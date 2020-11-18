@@ -22,6 +22,11 @@ let client = null;
 		client = null;
 		setTimeout(tryConnect, 1000);
 	});
+	client.on('close', () => {
+		log.error(`connection closed on ${config.addresses.relay}`)
+		client = null;
+		setTimeout(tryConnect, 1000);
+	});
 	client.on('data', (data) => {
 		log.debug(data.toString());
 	})
@@ -55,10 +60,12 @@ app.get('/', (req, res) => {
 				<td><pre>${client.remoteAddress}</pre></td>
 				<td><pre>${client.remoteIdentity}</pre></td>
 			</tr>
-		`)}
+		`).join('')}
 		</table>
 	`);
-})
+});
+
+// app.post
 
 app.listen(9999);
 
