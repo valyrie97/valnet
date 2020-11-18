@@ -49,11 +49,11 @@ const app = express();
 
 app.get('/', (req, res) => {
 	res.end(`
-		<table>
+		<table style="width: 100%">
 		${clients.map(client => `
 			<tr>
-				<td>${client.remoteAddress}</td>
-				<td>${client.remoteIdentity}</td>
+				<td><pre>${client.remoteAddress}</pre></td>
+				<td><pre>${client.remoteIdentity}</pre></td>
 			</tr>
 		`)}
 		</table>
