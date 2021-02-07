@@ -3,45 +3,79 @@ const log = require('signale').scope('service');
 const { execSync, spawn } = require('child_process');
 const branch = 'master';
 let proc;
+const Datastore = require('nedb');
+const logs = new Datastore({
+	filename: 'svc.log',
+	autoload: true
+});
+const { config } = require('../package.json');
+
+logp('==================================');
+logp('Starting Valnet Node as a Service!');
+logp('==================================');
 
 setInterval(function update() {
 	const remoteHash = execSync('git ls-remote https://github.com/marcus13345/valnet.git').toString().split(/[\t\n]/g)[0].trim();
 	const localHash = execSync(`git rev-parse ${branch}`).toString().trim();
 	if(remoteHash !== localHash) {
-		log.info('remote hash:', remoteHash);
-		log.info('local hash: ', localHash);
+		logp(`remote hash: ${remoteHash}`);
+		logp(`local hash: ${localHash}`);
 
-		log.info('killing relay...');
+		logp('killing relay...');
 		try {
 			proc.kill();
 		} catch (e) {
-			log.error('failed to kill active relay...');
-			log.error(e);
+			logp('failed to kill active relay...', 'error');
+			logp(e, 'error');
 		}
 	}
 }, 5000);
 
 (function keepAlive() {
-	proc = spawn('node', ['relay'], { stdio: "inherit" });
+	proc = spawn('node', ['relay'], {
+		stdio: 'pipe'
+	});
+
+	proc.stdout.on('data', (data) => {
+		process.stdout.write(data);
+		appendLogs('relay', data.toString(), 'stdout');
+	});
+	
+	proc.stderr.on('data', (data) => {
+		process.stderr.write(data);
+		appendLogs('relay', data.toString(), 'stderr');
+	});
 
 	proc.on('exit', () => {
-		log.info('relay exitted');
-		log.info('attempting to fetch new version');
+		logp('relay exitted');
+		logp('attempting to fetch new version');
 
-		execSync(`git fetch`);
-		execSync(`git pull`);
-		execSync(`yarn`);
+		appendLogs('fetch', execSync(`git fetch`));
+		appendLogs('pull', execSync(`git pull`));
+		appendLogs('yarn', execSync(`yarn`));
 
-		log.info('restarting...')
+		logp('restarting...')
 		setTimeout(() => {
 			keepAlive();
 		}, 1000);
 	})
 })();
 
+function logp(message, type = 'info') {
+	log[type](message);
+	appendLogs('service', message)
+}
 
 
 
+function appendLogs(source, data, type = 'output') {
+	logs.insert({
+		message: data.toString(),
+		type: type,
+		src: source,
+		timestamp: new Date().getTime()
+	})
+}
 
 
 

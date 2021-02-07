@@ -6,7 +6,8 @@
   "config": {
     "ports": {
       "ns": 5500,
-      "relay": 5600
+      "relay": 5600,
+      "http": 5700
     },
     "addresses": {
       "relay": "valnet.xyz"
