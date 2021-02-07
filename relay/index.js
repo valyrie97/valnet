@@ -10,43 +10,10 @@ const identity = await new Identity('relay', 'default');
 
 const clients = [];
 
-// ==================================== [STP CLIENT]
-let client = null;
-(function tryConnect() {
-	client = stp.connect(identity, config.ports.relay, config.addresses.relay);
-	client.on('ready', () => {
-		log.success(`connected to ${config.addresses.relay}`);
-	})
-	client.on('error', () => {
-		log.error(`connection error on ${config.addresses.relay}`)
-		client = null;
-		setTimeout(tryConnect, 1000);
-	});
-	client.on('close', () => {
-		log.error(`connection closed on ${config.addresses.relay}`)
-		client = null;
-		setTimeout(tryConnect, 1000);
-	});
-	client.on('data', (data) => {
-		log.debug(data.toString());
-	})
-})();
+// const client = stp.connect(identity, config.ports.relay, '127.0.0.1');
 
 // ==================================== [STP SERVER]
-const server = stp.createServer(identity, (client) => {
-	log.info(`incomming connection from ${client.remoteAddress}
-	${client.remoteIdentity}`);
-
-	clients.push(client);
-
-	client.on('close', pruneClients);
-});
-server.listen(config.ports.relay);
-log.success(`STP server listening on ${config.ports.relay}`);
-
-function pruneClients() {
-	clients = clients.filter(client => client.open);
-}
+const server = stp.createServer(identity, config.ports.relay);
 
 // ==================================== [EXPRESS]
 const express = require('express');
