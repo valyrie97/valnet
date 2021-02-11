@@ -9,6 +9,8 @@ const logs = new Datastore({
 	autoload: true
 });
 const { config } = require('../package.json');
+const express = require('express');
+const app = express();
 
 logp('==================================');
 logp('Starting Valnet Node as a Service!');
@@ -66,8 +68,6 @@ function logp(message, type = 'info') {
 	appendLogs('service', message)
 }
 
-
-
 function appendLogs(source, data, type = 'output') {
 	logs.insert({
 		message: data.toString(),
@@ -77,8 +77,36 @@ function appendLogs(source, data, type = 'output') {
 	})
 }
 
+app.get('/', (req, res) => {
+	logs.find({
+		timestamp: { $gt: Date.now() - 1000000 }
+	}, {}, (err, docs) => {
 
+		if(err) {
+			res.end(err.toString());
+			return;
+		}
 
+		docs.sort(function(a, b) {
+			return a.timestamp > b.timestamp;
+		});
+
+		res.end(`
+			<table style="width: 100%">
+			${docs.map(logItem => `
+				<tr>
+					<td><pre>${logItem.timestamp}</pre></td>
+					<td><pre>${logItem.source}</pre></td>
+					<td><pre>${logItem.type}</pre></td>
+					<td><pre>${logItem.message}</pre></td>
+				</tr>
+			`).join('')}
+			</table>
+		`);
+	})
+});
+
+app.listen(config.ports.http);
 
 
 
