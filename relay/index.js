@@ -39,7 +39,8 @@ function connectNetwork(t = 1000) {
 	client.on('error', e => {
 	});
 	client.on('close', e => {
-		setTimeout(connectNetwork.bind(global, t*2), t);
+		t *= 2;
+		setTimeout(connectNetwork.bind(global, t), t);
 		log.debug('retrying connection... ' + (t/1000) + 's')
 	});
 }
@@ -52,14 +53,18 @@ const app = express();
 app.get('/', (req, res) => {
 	res.end(`
 		<style>
+			html {
+				background: black;
+				color: white;
+			}
 			td:not(:last-child), th:not(:last-child) {
-				border-right: 1px solid black;
+				border-right: 1px solid white;
 			}
 			td, th {
 				padding-left: 8px;
 			}
 			th {
-				border-bottom: 3px solid black;
+				border-bottom: 3px solid white;
 			}
 			table {
 				border-spacing: 0px;
@@ -67,7 +72,7 @@ app.get('/', (req, res) => {
 				font-size: 13px;
 			}
 			tr:nth-child(2n) {
-				background: #ccc;
+				background: #111;
 			}
 		</style>
 		<table style="min-width: 300px">
@@ -89,7 +94,14 @@ app.get('/', (req, res) => {
 
 // app.post
 
-app.listen(8080);
+app.listen(8080).on('error', e => {
+	log.warn(e);
+	setTimeout(_ => {
+		app.listen(8080).on('error', e => {
+			log.error(e);
+		});
+	}, 5000);
+});
 
 
 
