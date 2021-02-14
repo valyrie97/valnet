@@ -7,7 +7,7 @@
     "ports": {
       "relay": 5600,
       "http": 5700,
-      "service": 5800
+      "service": 6000
     },
     "addresses": {
       "relay": "valnet.xyz"
