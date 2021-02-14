@@ -60,7 +60,7 @@ setInterval(function update() {
 		logp('attempting to fetch new version');
 
 		appendLogs('fetch', execSync(`git fetch`));
-		appendLogs('pull', execSync(`git pull`));
+		appendLogs('checkout', execSync(`git checkout --force --theirs ${branch}`));
 		appendLogs('yarn', execSync(`yarn`));
 
 		logp('restarting...')
