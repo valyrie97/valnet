@@ -30,7 +30,7 @@ function connectNetwork(t = 1000) {
 	const client = stp.connect({
 		identity,
 		port: config.ports.relay,
-		ip: 'valnet.xyz'
+		ip: config.addresses.relay
 	});
 	client.on('ready', () => {
 		log.success('connectd!');
