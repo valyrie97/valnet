@@ -25,7 +25,7 @@ stp.createServer({
 });
 
 function connectNetwork(t = 1000) {
-	if(t > 65000) t /= 2;
+	if(t > 60000) t /= 2;
 
 	const client = stp.connect({
 		identity,
