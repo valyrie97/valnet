@@ -113,7 +113,7 @@ app.get('/', (req, res) => {
 	})
 });
 
-app.listen(config.ports.http);
+app.listen(config.ports.service);
 
 
 

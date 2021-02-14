@@ -94,13 +94,13 @@ app.get('/', (req, res) => {
 
 // app.post
 
-app.listen(8080).on('error', e => {
+app.listen(config.ports.http).on('error', e => {
 	log.warn(e);
 	setTimeout(_ => {
-		app.listen(8080).on('error', e => {
+		app.listen(config.ports.http).on('error', e => {
 			log.error(e);
 		});
-	}, 5000);
+	}, config.ports.http);
 });
 
 
