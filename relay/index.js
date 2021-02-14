@@ -13,7 +13,22 @@ const clients = [];
 // const client = stp.connect(identity, config.ports.relay, '127.0.0.1');
 
 // ==================================== [STP SERVER]
-const server = stp.createServer(identity, config.ports.relay);
+stp.createServer({
+	identity: identity,
+	port: config.ports.relay
+}, socket => {
+	log.debug('loopback ' + socket.loopback)
+	clients.push(socket);
+});
+
+const client = stp.connect({
+	identity,
+	port: config.ports.relay,
+	ip: 'valnet.xyz'
+});
+client.on('error', e => {
+	log.error(e)
+})
 
 // ==================================== [EXPRESS]
 const express = require('express');
@@ -21,20 +36,45 @@ const app = express();
 
 app.get('/', (req, res) => {
 	res.end(`
-		<table style="width: 100%">
-		${clients.map(client => `
+		<style>
+			td:not(:last-child), th:not(:last-child) {
+				border-right: 1px solid black;
+			}
+			td, th {
+				padding-left: 8px;
+			}
+			th {
+				border-bottom: 3px solid black;
+			}
+			table {
+				border-spacing: 0px;
+				font-family: sans-serif;
+				font-size: 13px;
+			}
+			tr:nth-child(2n) {
+				background: #ccc;
+			}
+		</style>
+		<table style="min-width: 300px">
 			<tr>
-				<td><pre>${client.remoteAddress}</pre></td>
-				<td><pre>${client.remoteIdentity}</pre></td>
+				<th>Id</th>
+				<th>Address</th>
+				<th>loopback</th>
 			</tr>
-		`).join('')}
+			${clients.map((client, index) => `
+				<tr>
+					<td><pre>${index}</pre></td>
+					<td><pre>${client.remoteAddress}</pre></td>
+					<td><pre>${client.loopback}</pre></td>
+				</tr>
+			`).join('')}
 		</table>
 	`);
 });
 
 // app.post
 
-app.listen(9999);
+app.listen(8080);
 
 
 

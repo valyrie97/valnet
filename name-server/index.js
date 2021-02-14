@@ -23,13 +23,5 @@ const identity = new Identity('name-server', 'default');
 
 
 
-// async function connectClient (client) {
-// 	log.info(`connected client ${client.remoteAddress}`);
-// 	client.on('error', () => {
-// 		log.debug('who cares')
-// 	})
-// }
-
-
 
 })();

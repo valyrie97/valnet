@@ -5,9 +5,9 @@
   "license": "MIT",
   "config": {
     "ports": {
-      "ns": 5500,
       "relay": 5600,
-      "http": 5700
+      "http": 5700,
+      "service": 5800
     },
     "addresses": {
       "relay": "valnet.xyz"

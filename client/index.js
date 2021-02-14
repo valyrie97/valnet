@@ -20,8 +20,6 @@ const identity = yargs.profile ?
 // title(identity.name.replace(/-/g, ' '));
 
 // await profiles.create();
-// log.debug(await profiles.all())
-log.debug(await identity.name());
 
 
 
