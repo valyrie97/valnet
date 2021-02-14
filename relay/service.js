@@ -1,7 +1,7 @@
 (() => {
 const log = require('signale').scope('service');
 const { execSync, spawn } = require('child_process');
-const branch = 'master';
+const branch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
 let proc;
 const Datastore = require('nedb');
 const logs = new Datastore({
@@ -14,10 +14,17 @@ const app = express();
 
 logp('==================================');
 logp('Starting Valnet Node as a Service!');
+logp('Syncing to branch: ' + branch);
 logp('==================================');
 
 setInterval(function update() {
-	const remoteHash = execSync('git ls-remote https://github.com/marcus13345/valnet.git').toString().split(/[\t\n]/g)[0].trim();
+	const remoteHash = execSync('git ls-remote https://github.com/marcus13345/valnet.git').toString()
+		.split('\n')
+		.filter(test => {
+			return test.trim().endsWith(branch);
+		})[0]
+		.split('\t')[0]
+		.trim();
 	const localHash = execSync(`git rev-parse ${branch}`).toString().trim();
 	if(remoteHash !== localHash) {
 		logp(`remote hash: ${remoteHash}`);
