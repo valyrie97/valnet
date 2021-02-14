@@ -7,10 +7,13 @@ const { Identity } = require('../lib/Identity');
 const stp = require('../lib/STP');
 title('relay', false);
 const identity = await new Identity('relay', 'default');
+const upnp = require('../lib/upnp');
 
 const clients = [];
 
 // const client = stp.connect(identity, config.ports.relay, '127.0.0.1');
+
+// upnp.mapIndefinite(5600);
 
 // ==================================== [STP SERVER]
 stp.createServer({
@@ -21,14 +24,26 @@ stp.createServer({
 	clients.push(socket);
 });
 
-const client = stp.connect({
-	identity,
-	port: config.ports.relay,
-	ip: 'valnet.xyz'
-});
-client.on('error', e => {
-	log.error(e)
-})
+function connectNetwork(t = 1000) {
+	if(t > 65000) t /= 2;
+
+	const client = stp.connect({
+		identity,
+		port: config.ports.relay,
+		ip: 'valnet.xyz'
+	});
+	client.on('ready', () => {
+		log.success('connectd!');
+		t = 500;
+	})
+	client.on('error', e => {
+	});
+	client.on('close', e => {
+		setTimeout(connectNetwork.bind(global, t*2), t);
+		log.debug('retrying connection... ' + (t/1000) + 's')
+	});
+}
+connectNetwork();
 
 // ==================================== [EXPRESS]
 const express = require('express');
