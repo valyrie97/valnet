@@ -1,0 +1,47 @@
+@media (prefers-color-scheme: dark) {
+	html {
+		--b1: #001;
+		--b2: #112;
+		--b3: #223;
+		--b4: #334;
+		--t1: #EEF;
+		--t2: #DDE;
+		--t3: #CCD;
+	}
+}
+
+@media (prefers-color-scheme: light) {
+		html {
+			--b1: #EEF;
+			--b2: #DDE;
+			--b3: #CCD;
+			--b4: #BBC;
+			--t1: #001;
+			--t2: #112;
+			--t3: #223;
+	}
+}
+
+
+
+html {
+	background: var(--b1);
+	color: var(--t1);
+}
+td:not(:last-child), th:not(:last-child) {
+	border-right: 1px solid var(--t3);
+}
+td, th {
+	padding-left: 8px;
+}
+th {
+	border-bottom: 3px solid var(--t3);
+}
+table {
+	border-spacing: 0px;
+	font-family: sans-serif;
+	font-size: 13px;
+}
+tr:nth-child(2n) {
+	background: #111;
+}

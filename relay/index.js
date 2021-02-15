@@ -20,20 +20,20 @@ stp.createServer({
 	identity: identity,
 	port: config.ports.relay
 }, socket => {
-	log.debug('loopback ' + socket.loopback)
+	log.info('secured connection from ' + socket.remoteAddress);
 	clients.push(socket);
 });
 
 function connectNetwork(t = 1000) {
-	if(t > 65000) t /= 2;
+	if(t > 60000) t /= 2;
 
 	const client = stp.connect({
 		identity,
 		port: config.ports.relay,
-		ip: 'valnet.xyz'
+		ip: config.addresses.relay
 	});
 	client.on('ready', () => {
-		log.success('connectd!');
+		log.success('connectd to relay!');
 		t = 500;
 	})
 	client.on('error', e => {
@@ -41,7 +41,8 @@ function connectNetwork(t = 1000) {
 	client.on('close', e => {
 		t *= 2;
 		setTimeout(connectNetwork.bind(global, t), t);
-		log.debug('retrying connection... ' + (t/1000) + 's')
+		log.warn('disconnected from relay');
+		log.warn('retrying connection... ' + (t/1000) + 's')
 	});
 }
 connectNetwork();
@@ -52,29 +53,6 @@ const app = express();
 
 app.get('/', (req, res) => {
 	res.end(`
-		<style>
-			html {
-				background: black;
-				color: white;
-			}
-			td:not(:last-child), th:not(:last-child) {
-				border-right: 1px solid white;
-			}
-			td, th {
-				padding-left: 8px;
-			}
-			th {
-				border-bottom: 3px solid white;
-			}
-			table {
-				border-spacing: 0px;
-				font-family: sans-serif;
-				font-size: 13px;
-			}
-			tr:nth-child(2n) {
-				background: #111;
-			}
-		</style>
 		<table style="min-width: 300px">
 			<tr>
 				<th>Id</th>
@@ -92,15 +70,33 @@ app.get('/', (req, res) => {
 	`);
 });
 
+app.use((req, res, next) => {
+	res.header('Access-Control-Allow-Origin', '*');
+	next();
+})
+
+app.get('/clients', (req, res) => {
+	res.json({
+		clients: clients.map((client, index) => {
+			return {
+				id: index,
+				address: client.remoteAddress,
+				loopback: client.loopback,
+				identity: client.identity.publicKey,
+				connected: client.secured
+			}
+		})
+	})
+})
 // app.post
 
-app.listen(8080).on('error', e => {
+app.listen(config.ports.http).on('error', e => {
 	log.warn(e);
 	setTimeout(_ => {
-		app.listen(8080).on('error', e => {
+		app.listen(config.ports.http).on('error', e => {
 			log.error(e);
 		});
-	}, 5000);
+	}, config.ports.http);
 });
 
 

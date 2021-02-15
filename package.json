@@ -7,7 +7,7 @@
     "ports": {
       "relay": 5600,
       "http": 5700,
-      "service": 5800
+      "service": 5000
     },
     "addresses": {
       "relay": "valnet.xyz"
@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
+    "express-ws": "^4.0.0",
     "font-ascii": "^1.2.1",
     "gradient-string": "^1.2.0",
     "human-readable-ids": "^1.0.4",
