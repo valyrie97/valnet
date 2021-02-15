@@ -1,4 +1,4 @@
-(() => {
+(async () => {
 const log = require('signale').scope('service');
 const { execSync, spawn } = require('child_process');
 const branch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
@@ -72,7 +72,7 @@ setInterval(function update() {
 
 function logp(message, type = 'info') {
 	log[type](message);
-	appendLogs('service', message)
+	appendLogs('service', message + '\n')
 }
 
 function appendLogs(source, data, type = 'output') {
@@ -86,35 +86,53 @@ function appendLogs(source, data, type = 'output') {
 
 app.get('/', (req, res) => {
 	logs.find({
-		timestamp: { $gt: Date.now() - 1000000 }
-	}, {}, (err, docs) => {
+		// timestamp: { $gt: Date.now() - 1000000 }
+	}, {}).sort({
+		timestamp: 1
+	}).exec((err, docs) => {
 
 		if(err) {
 			res.end(err.toString());
 			return;
 		}
-
-		docs.sort(function(a, b) {
-			return a.timestamp > b.timestamp;
-		});
-
+// ${new Date(logItem.timestamp).toLocaleString().padStart(40)}: 
 		res.end(`
-			<table style="width: 100%">
+		<html>
+		<head>
+		<meta charset="UTF-16">
+		</head>
+		<body>
+			<style>
+				table {
+					border-spacing: 0px;
+					font-size: 13px;
+				}
+				tr {
+					vertical-align: top;
+				}
+			</style>
+			<pre>
+${docs.map(logItem => logItem.message).join('').replace(/\u001B\[.*?[A-Za-z]/g, '')}
+			</pre>
+			
+			<!--
+			<table>
 			${docs.map(logItem => `
 				<tr>
-					<td><pre>${logItem.timestamp}</pre></td>
-					<td><pre>${logItem.source}</pre></td>
-					<td><pre>${logItem.type}</pre></td>
+					<td><pre>${new Date(logItem.timestamp).toLocaleDateString()}</pre></td>
+					<td><pre>${new Date(logItem.timestamp).toLocaleTimeString()}</pre></td>
 					<td><pre>${logItem.message}</pre></td>
 				</tr>
 			`).join('')}
 			</table>
+			-->
+		</body>
+		</html>
 		`);
 	})
 });
 
 app.listen(config.ports.service);
-
 
 
 
