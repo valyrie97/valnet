@@ -120,10 +120,25 @@ app.get('/logs/:time', (req, res) => {
 				tr {
 					vertical-align: top;
 				}
+				html {
+					background: #0E1419;
+					color: #F8F8F2;
+				}
 			</style>
 			<pre>
 ${docs.map(logItem => logItem.message).join('').replace(/\u001B\[.*?[A-Za-z]/g, '')}
 			</pre>
+			<br><br><br><br><br><br>
+			<script>
+			requestAnimationFrame(_ => {
+				requestAnimationFrame(_ => {
+					window.scrollTo(0,document.body.scrollHeight);
+				});
+			});
+			setTimeout(_ => {
+				location.reload();
+			}, 2000);
+			</script>
 		</body>
 		</html>
 		`);
