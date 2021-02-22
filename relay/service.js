@@ -85,11 +85,21 @@ function appendLogs(source, data, type = 'output') {
 }
 
 app.get('/', (req, res) => {
+	res.end('<a href="/logs">Logs</a>');
+})
+
+app.get('/logs', (req, res) => {
+	res.redirect(`/logs/${Date.now() - (1000 * 60 * 60 * 24)}`)
+})
+
+app.get('/logs/:time', (req, res) => {
+	
 	logs.find({
-		// timestamp: { $gt: Date.now() - 1000000 }
+		timestamp: { $gt: parseInt(req.params.time) }
 	}, {}).sort({
 		timestamp: 1
 	}).exec((err, docs) => {
+
 
 		if(err) {
 			res.end(err.toString());
@@ -114,18 +124,6 @@ app.get('/', (req, res) => {
 			<pre>
 ${docs.map(logItem => logItem.message).join('').replace(/\u001B\[.*?[A-Za-z]/g, '')}
 			</pre>
-			
-			<!--
-			<table>
-			${docs.map(logItem => `
-				<tr>
-					<td><pre>${new Date(logItem.timestamp).toLocaleDateString()}</pre></td>
-					<td><pre>${new Date(logItem.timestamp).toLocaleTimeString()}</pre></td>
-					<td><pre>${logItem.message}</pre></td>
-				</tr>
-			`).join('')}
-			</table>
-			-->
 		</body>
 		</html>
 		`);
