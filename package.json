@@ -14,11 +14,8 @@
     }
   },
   "scripts": {
-    "name-server": "supervisor -w name-server,lib -n exit name-server/index.js",
     "relay": "supervisor -w relay,lib -n exit relay/index.js",
-    "relay:service": "supervisor -- relay/service",
-    "client:a": "supervisor -w client,lib -n exit -- client/index.js --profile J2aV59rsIgcdd5k2",
-    "client:b": "supervisor -w client,lib -n exit -- client/index.js --profile LsE8OnVzr1iYrkT0"
+    "relay:service": "supervisor -- relay/service"
   },
   "dependencies": {
     "express": "^4.17.1",
