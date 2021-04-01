@@ -2,38 +2,32 @@
 const { title } = require('../lib/title');
 const net = require('net');
 const log = require('signale').scope('relay');
-const { config } = require('../package.json');
 const { Identity } = require('../lib/Identity');
 const stp = require('../lib/STP');
 title('relay', false);
 const identity = await new Identity('relay', 'default');
 const upnp = require('../lib/upnp');
-
-const clients = [];
+const Node = require('../lib/node');
+const { config, write } = require('../lib/config');
 
 // const client = stp.connect(identity, config.ports.relay, '127.0.0.1');
 
 // upnp.mapIndefinite(5600);
 
 // ==================================== [STP SERVER]
-stp.createServer({
-	identity: identity,
-	port: config.ports.relay
-}, socket => {
-	log.info('secured connection from ' + socket.remoteAddress);
-	clients.push(socket);
-});
+
+const node = new Node(identity);
 
 function connectNetwork(t = 1000) {
 	if(t > 60000) t /= 2;
 
 	const client = stp.connect({
 		identity,
-		port: config.ports.relay,
-		ip: config.addresses.relay
+		port: config.endpoints[0].split(':')[1],
+		ip: config.endpoints[0].split(':')[0]
 	});
 	client.on('ready', () => {
-		log.success('connectd to relay!');
+		log.success('connected to relay!');
 		t = 500;
 	})
 	client.on('error', e => {

@@ -6,12 +6,16 @@
   "config": {
     "ports": {
       "relay": 5600,
+      "relayEnd": 5699,
       "http": 5700,
       "service": 5000
     },
     "addresses": {
       "relay": "valnet.xyz"
-    }
+    },
+    "endpoints": [
+      "valnet.xyz:5500"
+    ]
   },
   "scripts": {
     "relay": "supervisor -w relay,lib -n exit relay/index.js",
@@ -26,6 +30,7 @@
     "ip": "^1.1.5",
     "keyv": "^4.0.3",
     "keyv-file": "^0.2.0",
+    "md5": "^2.3.0",
     "nat-upnp": "^1.1.1",
     "nedb": "^1.8.0",
     "node-rsa": "^1.1.1",
