@@ -1,7 +1,7 @@
 (async () => {
 const { title } = require('../lib/title');
 const net = require('net');
-const log = require('signale').scope('relay');
+const log = require('signale').scope('RLAY');
 const { Identity } = require('../lib/Identity');
 const stp = require('../lib/STP');
 title('relay', false);
@@ -22,7 +22,7 @@ function connectNetwork(t = 1000) {
 	if(t > 60000) t /= 2;
 
 	const poopoo = config.endpoints[0].split(':');
-	console.log(poopoo);
+	// console.log(poopoo);
 
 	const client = stp.connect({
 		identity,

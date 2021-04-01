@@ -1,5 +1,5 @@
 (async () => {
-const log = require('signale').scope('service');
+const log = require('signale').scope('SRVC');
 const { execSync, spawn } = require('child_process');
 const branch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
 let proc;
