@@ -12,7 +12,11 @@ const { config } = require('../package.json');
 const express = require('express');
 const app = express();
 
-appendLogs('yarn', execSync(`yarn`));
+try {
+	appendLogs('yarn', execSync(`yarn`));
+} catch (e) {
+	appendLogs('failed to yarn install...')
+}
 
 logp('==================================');
 logp('Starting Valnet Node as a Service!');
