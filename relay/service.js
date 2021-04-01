@@ -12,6 +12,8 @@ const { config } = require('../package.json');
 const express = require('express');
 const app = express();
 
+appendLogs('yarn', execSync(`yarn`));
+
 logp('==================================');
 logp('Starting Valnet Node as a Service!');
 logp('Syncing to branch: ' + branch);
