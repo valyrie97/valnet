@@ -21,10 +21,13 @@ const node = new Node(identity);
 function connectNetwork(t = 1000) {
 	if(t > 60000) t /= 2;
 
+	const poopoo = config.endpoints[0].split(':');
+	console.log(poopoo);
+
 	const client = stp.connect({
 		identity,
-		port: config.endpoints[0].split(':')[1],
-		ip: config.endpoints[0].split(':')[0]
+		port: parseInt(poopoo[1]),
+		ip: poopoo[0]
 	});
 	client.on('ready', () => {
 		log.success('connected to relay!');
