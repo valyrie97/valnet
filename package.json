@@ -19,7 +19,8 @@
   },
   "scripts": {
     "relay": "supervisor -w relay,lib -n exit relay/index.js",
-    "relay:service": "supervisor -- relay/service"
+    "relay:service": "supervisor -- relay/service",
+    "sloc": "find lib -type f | xargs wc -l"
   },
   "dependencies": {
     "bonjour": "^3.5.0",
