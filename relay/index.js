@@ -39,10 +39,10 @@ function connectNetwork(t = 1000) {
 		t *= 2;
 		setTimeout(connectNetwork.bind(global, t), t);
 		log.warn('disconnected from relay');
-		log.warn('retrying connection... ' + (t/1000) + 's')
+		log.warn('retrying connection... ' + (t / 1000) + 's');
 	});
 }
-connectNetwork();
+// connectNetwork();
 
 // ==================================== [EXPRESS]
 const express = require('express');

@@ -41,8 +41,6 @@ function searchGateway(timeout, callback) {
   }
   
   var onlistening = function() {
-
-		console.log('listening?')
   
     socket.setBroadcast(socket.fd, true);
     // send a few packets just in case.
