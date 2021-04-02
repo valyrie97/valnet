@@ -14,7 +14,8 @@
       "relay": "valnet.xyz"
     },
     "endpoints": [
-      "valnet.xyz:5500"
+      "valnet.xyz:5500",
+      "35.196.210.135:5600"
     ]
   },
   "scripts": {
@@ -24,6 +25,7 @@
   },
   "dependencies": {
     "bonjour": "^3.5.0",
+    "deepmerge": "^4.2.2",
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
     "font-ascii": "^1.2.1",
