@@ -6,29 +6,34 @@
   "config": {
     "ports": {
       "relay": 5600,
+      "relayEnd": 5699,
       "http": 5700,
       "service": 5000
     },
     "addresses": {
       "relay": "valnet.xyz"
-    }
+    },
+    "endpoints": [
+      "valnet.xyz:5500"
+    ]
   },
   "scripts": {
-    "name-server": "supervisor -w name-server,lib -n exit name-server/index.js",
     "relay": "supervisor -w relay,lib -n exit relay/index.js",
     "relay:service": "supervisor -- relay/service",
-    "client:a": "supervisor -w client,lib -n exit -- client/index.js --profile J2aV59rsIgcdd5k2",
-    "client:b": "supervisor -w client,lib -n exit -- client/index.js --profile LsE8OnVzr1iYrkT0"
+    "sloc": "find lib -type f | xargs wc -l"
   },
   "dependencies": {
+    "bonjour": "^3.5.0",
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
     "font-ascii": "^1.2.1",
+    "fs-extra": "^9.1.0",
     "gradient-string": "^1.2.0",
     "human-readable-ids": "^1.0.4",
     "ip": "^1.1.5",
     "keyv": "^4.0.3",
     "keyv-file": "^0.2.0",
+    "md5": "^2.3.0",
     "nat-upnp": "^1.1.1",
     "nedb": "^1.8.0",
     "node-rsa": "^1.1.1",

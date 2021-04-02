@@ -1,51 +1,16 @@
 (async () => {
 const { title } = require('../lib/title');
-const net = require('net');
-const log = require('signale').scope('relay');
-const { config } = require('../package.json');
+const log = require('signale').scope('RLAY');
 const { Identity } = require('../lib/Identity');
-const stp = require('../lib/STP');
 title('relay', false);
 const identity = await new Identity('relay', 'default');
-const upnp = require('../lib/upnp');
+const Node = require('../lib/node');
+const { config } = require('../lib/config');
+const { ensureDirSync } = require('fs-extra');
+const appdata = require('../lib/appdata');
 
-const clients = [];
-
-// const client = stp.connect(identity, config.ports.relay, '127.0.0.1');
-
-// upnp.mapIndefinite(5600);
-
-// ==================================== [STP SERVER]
-stp.createServer({
-	identity: identity,
-	port: config.ports.relay
-}, socket => {
-	log.info('secured connection from ' + socket.remoteAddress);
-	clients.push(socket);
-});
-
-function connectNetwork(t = 1000) {
-	if(t > 60000) t /= 2;
-
-	const client = stp.connect({
-		identity,
-		port: config.ports.relay,
-		ip: config.addresses.relay
-	});
-	client.on('ready', () => {
-		log.success('connectd to relay!');
-		t = 500;
-	})
-	client.on('error', e => {
-	});
-	client.on('close', e => {
-		t *= 2;
-		setTimeout(connectNetwork.bind(global, t), t);
-		log.warn('disconnected from relay');
-		log.warn('retrying connection... ' + (t/1000) + 's')
-	});
-}
-connectNetwork();
+ensureDirSync(`${appdata}/valnet/relay`);
+const node = new Node(identity);
 
 // ==================================== [EXPRESS]
 const express = require('express');

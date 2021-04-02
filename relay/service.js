@@ -1,5 +1,5 @@
 (async () => {
-const log = require('signale').scope('service');
+const log = require('signale').scope('SRVC');
 const { execSync, spawn } = require('child_process');
 const branch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
 let proc;
@@ -11,6 +11,12 @@ const logs = new Datastore({
 const { config } = require('../package.json');
 const express = require('express');
 const app = express();
+
+try {
+	appendLogs('yarn', execSync(`yarn`));
+} catch (e) {
+	appendLogs('failed to yarn install...')
+}
 
 logp('==================================');
 logp('Starting Valnet Node as a Service!');
@@ -130,14 +136,14 @@ ${docs.map(logItem => logItem.message).join('').replace(/\u001B\[.*?[A-Za-z]/g, 
 			</pre>
 			<br><br><br><br><br><br>
 			<script>
-			requestAnimationFrame(_ => {
-				requestAnimationFrame(_ => {
-					window.scrollTo(0,document.body.scrollHeight);
-				});
-			});
-			setTimeout(_ => {
-				location.reload();
-			}, 2000);
+			// requestAnimationFrame(_ => {
+			// 	requestAnimationFrame(_ => {
+			// 		window.scrollTo(0,document.body.scrollHeight);
+			// 	});
+			// });
+			// setTimeout(_ => {
+			// 	location.reload();
+			// }, 2000);
 			</script>
 		</body>
 		</html>
