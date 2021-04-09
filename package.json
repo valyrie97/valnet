@@ -1,4 +1,15 @@
 {
+  "config": {
+    "ports": {
+      "relay": 5600,
+      "relayEnd": 5699,
+      "http": 5700,
+      "service": 5000
+    },
+    "endpoints": [
+      "valnet.xyz:5500"
+    ]
+  },
   "name": "electron-react-boilerplate",
   "productName": "ElectronReact",
   "description": "Electron application boilerplate based on React, React Router, Webpack, React Fast Refresh for rapid application development",
@@ -14,20 +25,6 @@
     "start:main": "cross-env NODE_ENV=development electron -r ./.erb/scripts/BabelRegister ./src/main.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development webpack serve --config ./.erb/configs/webpack.config.renderer.dev.babel.js",
     "test": "jest"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "cross-env NODE_ENV=development eslint --cache"
-    ],
-    "{*.json,.{babelrc,eslintrc,prettierrc}}": [
-      "prettier --ignore-path .eslintignore --parser json --write"
-    ],
-    "*.{css,scss}": [
-      "prettier --ignore-path .eslintignore --single-quote --write"
-    ],
-    "*.{html,md,yml}": [
-      "prettier --ignore-path .eslintignore --single-quote --write"
-    ]
   },
   "build": {
     "productName": "ElectronReact",
@@ -213,13 +210,11 @@
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-erb": "^2.0.0",
-    "eslint-config-prettier": "^6.11.0",
     "eslint-import-resolver-webpack": "^0.13.0",
     "eslint-plugin-compat": "^3.8.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jest": "^24.1.3",
     "eslint-plugin-jsx-a11y": "6.4.1",
-    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.0.8",
@@ -231,7 +226,6 @@
     "mini-css-extract-plugin": "^1.3.1",
     "node-sass": "^5.0.0",
     "opencollective-postinstall": "^2.0.3",
-    "prettier": "^2.0.5",
     "react-refresh": "^0.9.0",
     "react-test-renderer": "^17.0.1",
     "rimraf": "^3.0.0",
@@ -248,15 +242,23 @@
     "yarn-deduplicate": "^3.1.0"
   },
   "dependencies": {
+    "bonjour": "^3.5.0",
     "electron-debug": "^3.1.0",
     "electron-log": "^4.2.4",
     "electron-updater": "^4.3.4",
     "history": "^5.0.0",
+    "human-readable-ids": "^1.0.4",
+    "keyv": "^4.0.3",
+    "keyv-file": "^0.2.0",
+    "md5": "^2.3.0",
     "menubar": "^9.0.3",
+    "nat-upnp": "^1.1.1",
+    "node-rsa": "^1.1.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "regenerator-runtime": "^0.13.5",
+    "signale": "^1.4.0",
     "source-map-support": "^0.5.19"
   },
   "devEngines": {
@@ -268,21 +270,6 @@
     "url": "https://opencollective.com/electron-react-boilerplate-594"
   },
   "browserslist": [],
-  "prettier": {
-    "overrides": [
-      {
-        "files": [
-          ".prettierrc",
-          ".babelrc",
-          ".eslintrc"
-        ],
-        "options": {
-          "parser": "json"
-        }
-      }
-    ],
-    "singleQuote": true
-  },
   "renovate": {
     "extends": [
       "bliss"
@@ -290,10 +277,5 @@
     "baseBranches": [
       "next"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }

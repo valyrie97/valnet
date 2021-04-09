@@ -5,14 +5,13 @@ const { title } = require('../lib/title');
 const log = require('signale').scope('RLAY');
 const { Identity } = require('../lib/Identity');
 title('relay', false);
-const identity = await new Identity('relay', 'default');
 const Node = require('../lib/node');
 const { config } = require('../lib/config');
 const { ensureDirSync } = require('fs-extra');
 const appdata = require('../lib/appdata');
 
 ensureDirSync(`${appdata}/valnet/relay`);
-const node = new Node(identity);
+const node = new Node();
 
 // ==================================== [EXPRESS]
 const express = require('express');

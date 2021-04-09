@@ -132,3 +132,7 @@ app.on('activate', () => {
 });
 
 // === [ VALNET NODE ] ===
+
+const { Node } = require('./lib/node');
+
+const node = new Node();
