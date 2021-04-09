@@ -1,3 +1,5 @@
+process.env.DEBUG = 'xyz:valnet:*';
+
 (async () => {
 const { title } = require('../lib/title');
 const log = require('signale').scope('RLAY');

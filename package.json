@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "bonjour": "^3.5.0",
+    "debug": "^4.3.1",
     "deepmerge": "^4.2.2",
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
