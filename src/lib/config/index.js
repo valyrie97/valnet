@@ -1,9 +1,9 @@
 const { readFileSync, writeFileSync, existsSync } = require('fs');
 const { ensureDirSync } = require('fs-extra');
-const { config } = require('../../package.json');
+const config = require('./defaults.js');
 const deepmerge = require('deepmerge');
 
-const appdata = require('./appdata');
+const appdata = require('../appdata');
 ensureDirSync(`${appdata}/valnet/relay`);
 const filepath = `${appdata}/valnet/relay/config.json`;
 

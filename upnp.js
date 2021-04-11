@@ -50,7 +50,6 @@ function searchGateway(timeout, callback) {
   
   var onmessage = function(message, rinfo) {
   
-		console.log('message?')
     message = message.toString();
     
     if (message.substr(0, OK.length) !== OK || 

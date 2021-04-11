@@ -28,8 +28,6 @@ class IpcServer extends EventEmitter {
 		ipc.server.on('req', (evt, incommingSocket) => {
 			if (incommingSocket !== socket) return;
 
-			console.log('req -', evt);
-
 			const [
 				name,
 				...args
@@ -82,12 +80,8 @@ function IpcClient(name) {
 	return this.proxy;
 
 }
-if(!!module.exports) {
-	module.exports.IpcServer = IpcServer;
-	module.exports.IpcClient = IpcClient;
-}
 
-export {
+module.exports = {
 	IpcServer,
 	IpcClient
-}
+};
