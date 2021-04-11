@@ -1,14 +1,14 @@
-process.env.DEBUG = 'xyz:valnet:*';
+// process.env.DEBUG = 'xyz:valnet:*';
 
 (async () => {
-const { title } = require('../lib/title');
+const { title } = require('../src/lib/title');
 const log = require('signale').scope('RLAY');
-const { Identity } = require('../lib/Identity');
+const { Identity } = require('../src/lib/Identity');
 title('relay', false);
-const Node = require('../lib/node');
-const { config } = require('../lib/config');
+const Node = require('../src/lib/node');
+const { config } = require('../src/lib/config');
 const { ensureDirSync } = require('fs-extra');
-const appdata = require('../lib/appdata');
+const appdata = require('../src/lib/appdata');
 
 ensureDirSync(`${appdata}/valnet/relay`);
 const node = new Node();

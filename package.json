@@ -7,7 +7,8 @@
       "service": 5000
     },
     "endpoints": [
-      "valnet.xyz:5500"
+      "valnet.xyz:5500",
+      "35.196.210.135:5600"
     ]
   },
   "name": "electron-react-boilerplate",
@@ -24,7 +25,10 @@
     "start": "node -r @babel/register ./.erb/scripts/CheckPortInUse.js && cross-env yarn start:renderer",
     "start:main": "cross-env NODE_ENV=development electron -r ./.erb/scripts/BabelRegister ./src/main.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development webpack serve --config ./.erb/configs/webpack.config.renderer.dev.babel.js",
-    "test": "jest"
+    "test": "jest",
+    "relay": "supervisor -w relay,src -n exit relay/index.js",
+    "relay:service": "supervisor -- relay/service",
+    "sloc": "find lib -type f | xargs wc -l"
   },
   "build": {
     "productName": "ElectronReact",
@@ -243,9 +247,12 @@
   },
   "dependencies": {
     "bonjour": "^3.5.0",
+    "debug": "^4.3.1",
     "electron-debug": "^3.1.0",
     "electron-log": "^4.2.4",
     "electron-updater": "^4.3.4",
+    "font-ascii": "^1.2.1",
+    "gradient-string": "^1.2.0",
     "history": "^5.0.0",
     "human-readable-ids": "^1.0.4",
     "keyv": "^4.0.3",
@@ -253,13 +260,17 @@
     "md5": "^2.3.0",
     "menubar": "^9.0.3",
     "nat-upnp": "^1.1.1",
+    "node-ipc": "^9.1.4",
     "node-rsa": "^1.1.1",
+    "printable-characters": "^1.0.42",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "regenerator-runtime": "^0.13.5",
     "signale": "^1.4.0",
-    "source-map-support": "^0.5.19"
+    "source-map-support": "^0.5.19",
+    "supervisor": "^0.12.0",
+    "uuid": "^8.3.2"
   },
   "devEngines": {
     "node": ">=10.x",

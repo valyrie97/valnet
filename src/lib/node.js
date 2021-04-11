@@ -8,6 +8,7 @@ const log = require('signale').scope('NODE');
 const bonjour = require('bonjour')();
 const Gateway = require('./Gateway');
 const { Identity } = require('./Identity');
+const { IpcServer } = require('./ipc.js');
 
 class Node extends EventEmitter {
 	clients = [];
@@ -73,7 +74,15 @@ class Node extends EventEmitter {
 		this.multicastBrowser.on('up', this.serviceUp.bind(this));
 		this.multicastBrowser.on('down', this.serviceDown.bind(this));
 
+		const ipcServer = new IpcServer('valnet');
+		ipcServer.registerFunction(this.getClients.bind(this));
+
 		// log.success('Node successfully registered!');
+	}
+
+	getClients() {
+		log.debug(this.clients);
+		return this.clients;
 	}
 
 	async serviceUp(device) {
