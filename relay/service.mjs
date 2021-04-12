@@ -1,21 +1,24 @@
+import Signale from 'signale';
+import { execSync, spawn } from 'child_process';
+import Datastore from 'nedb';
+import { config } from '../src/lib/config/index.js';
+import express from 'express';
+
 (async () => {
-const log = require('signale').scope('SRVC');
-const { execSync, spawn } = require('child_process');
+
+const log = Signale.scope('SRVC');
 const branch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
 let proc;
-const Datastore = require('nedb');
 const logs = new Datastore({
 	filename: 'svc.log',
 	autoload: true
 });
-const { config } = require('../package.json');
-const express = require('express');
 const app = express();
 
 try {
 	appendLogs('yarn', execSync(`yarn`));
 } catch (e) {
-	appendLogs('failed to yarn install...')
+	logp('failed to yarn install...')
 }
 
 logp('==================================');
@@ -47,7 +50,7 @@ setInterval(function update() {
 }, 5000);
 
 (function keepAlive() {
-	proc = spawn('node', ['relay'], {
+	proc = spawn('node', ['./relay/index.mjs'], {
 		stdio: 'pipe'
 	});
 

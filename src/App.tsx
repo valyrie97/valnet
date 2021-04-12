@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import icon from '../assets/icon.svg';
 import './App.global.css';
-import { IpcClient } from './lib/ipc';
+import { IpcClient } from './lib/ipc.js';
+
 
 class Hello extends React.Component {
   api = new IpcClient('valnet');
@@ -15,6 +16,11 @@ class Hello extends React.Component {
     console.log(await this.api.getClients())
   }
 
+  async killApp() {
+    // alert(this);
+    await this.api.kill(1);
+  }
+
   render() {
     return (
       <div>
@@ -24,20 +30,19 @@ class Hello extends React.Component {
         <h1>electron-react-boilerplate</h1>
         <div className="Hello">
           <a
-            href="https://electron-react-boilerplate.js.org/"
-            target="_blank"
+            href="#"
             rel="noreferrer"
+            onClick={this.killApp.bind(this)}
           >
             <button type="button">
               <span role="img" aria-label="books">
                 📚
               </span>
-              Read our docs
+              Kill App
             </button>
           </a>
           <a
-            href="https://github.com/sponsors/electron-react-boilerplate"
-            target="_blank"
+            target="#"
             rel="noreferrer"
           >
             <button type="button">

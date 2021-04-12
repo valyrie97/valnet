@@ -1,21 +1,26 @@
 // process.env.DEBUG = 'xyz:valnet:*';
+'use strict';
 
-(async () => {
-const { title } = require('../src/lib/title');
-const log = require('signale').scope('RLAY');
-const { Identity } = require('../src/lib/Identity');
+import { title } from '../src/lib/title.js';
+import { Identity } from '../src/lib/Identity.js';
+import { config } from '../src/lib/config/index.js';
+import appdata from '../src/lib/appdata.js';
+import Node from '../src/lib/node.js';
+
+import Signale from 'signale';
+import { ensureDirSync } from 'fs-extra';
+import express from 'express';
+
 title('relay', false);
-const Node = require('../src/lib/node');
-const { config } = require('../src/lib/config');
-const { ensureDirSync } = require('fs-extra');
-const appdata = require('../src/lib/appdata');
-
-ensureDirSync(`${appdata}/valnet/relay`);
+const log = Signale.scope('RLAY');
 const node = new Node();
 
+(async () => {
+
 // ==================================== [EXPRESS]
-const express = require('express');
+
 const app = express();
+ensureDirSync(`${appdata}/valnet/relay`);
 
 app.get('/', (req, res) => {
 	res.end(`

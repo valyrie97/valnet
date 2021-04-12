@@ -2,8 +2,7 @@ const EventEmitter = require('events')
 const stp = require('./STP');
 const upnp = require('./upnp');
 const md5 = require('md5');
-const pkg = require('./../package.json');
-const { config, write } = require('./config.js');
+const { config, write } = require('./config/index.js');
 const log = require('signale').scope('NODE');
 const bonjour = require('bonjour')();
 const Gateway = require('./Gateway');
@@ -61,7 +60,7 @@ class Node extends EventEmitter {
 			log.info('incomming connection from ' + connection.remoteName);
 		});
 		
-		log.info('advertising node on multicast...')
+		log.info('advertising node on multicast...');
 		this.multicastAd = bonjour.publish({
 			name: this.name,
 			type: 'stp',
@@ -76,6 +75,7 @@ class Node extends EventEmitter {
 
 		const ipcServer = new IpcServer('valnet');
 		ipcServer.registerFunction(this.getClients.bind(this));
+		ipcServer.registerFunction(this.kill.bind(this));
 
 		// log.success('Node successfully registered!');
 	}
@@ -83,6 +83,10 @@ class Node extends EventEmitter {
 	getClients() {
 		log.debug(this.clients);
 		return this.clients;
+	}
+
+	kill(code) {
+		process.exit(code);
 	}
 
 	async serviceUp(device) {
@@ -120,8 +124,6 @@ class Node extends EventEmitter {
 				return;
 			}
 		}
-
-		// console.log(mappings, this.hash);
 	}
 
 	static get Node() {
