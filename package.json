@@ -27,7 +27,7 @@
     "start:renderer": "cross-env NODE_ENV=development webpack serve --config ./.erb/configs/webpack.config.renderer.dev.babel.js",
     "test": "jest",
     "relay": "supervisor -w relay,src -n exit relay/index.mjs",
-    "relay:service": "supervisor -- relay/service.mjs",
+    "relay:service": "supervisor -w relay,src -- relay/service.mjs",
     "sloc": "find lib -type f | xargs wc -l"
   },
   "build": {

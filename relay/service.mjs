@@ -4,6 +4,7 @@ import Datastore from 'nedb';
 import { config } from '../src/lib/config/index.js';
 import express from 'express';
 
+
 (async () => {
 
 const log = Signale.scope('SRVC');
@@ -15,7 +16,9 @@ const logs = new Datastore({
 });
 const app = express();
 
+
 try {
+	logp('Attempting yarn install...')
 	appendLogs('yarn', execSync(`yarn`));
 } catch (e) {
 	logp('failed to yarn install...')
