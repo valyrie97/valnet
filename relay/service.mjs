@@ -109,17 +109,23 @@ app.get('/logs/:time', (req, res) => {
 	logs.find({
 		timestamp: { $gt: parseInt(req.params.time) }
 	}, {}).sort({
-		timestamp: 1
-	}).exec((err, docs) => {
+		timestamp: -1
+	}).limit(100).exec((err, docs) => {
 
+		res.end(Template.logs(docs.reverse().map(v => v.message)));
 
 		if(err) {
 			res.end(err.toString());
 			return;
 		}
 // ${new Date(logItem.timestamp).toLocaleString().padStart(40)}: 
-		res.end(`
-		<html>
+		res.end();
+	})
+});
+
+const Template = {
+	logs(messages) {
+		return `<html>
 		<head>
 		<meta charset="UTF-16">
 		</head>
@@ -138,7 +144,7 @@ app.get('/logs/:time', (req, res) => {
 				}
 			</style>
 			<pre>
-${docs.map(logItem => logItem.message).join('').replace(/\u001B\[.*?[A-Za-z]/g, '')}
+${messages.join('').replace(/\u001B\[.*?[A-Za-z]/g, '')}
 			</pre>
 			<br><br><br><br><br><br>
 			<script>
@@ -152,10 +158,9 @@ ${docs.map(logItem => logItem.message).join('').replace(/\u001B\[.*?[A-Za-z]/g, 
 			// }, 2000);
 			</script>
 		</body>
-		</html>
-		`);
-	})
-});
+		</html>`;
+	}
+};
 
 app.listen(config.ports.service);
 
