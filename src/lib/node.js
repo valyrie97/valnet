@@ -48,6 +48,7 @@ class Node extends EventEmitter {
 		log.warn('If This is meant to be a server, you\'ll');
 		log.warn('need to manually forward the port.');
 		log.warn('elsewise, this warning is safe to ignore.');
+		this.port = config.ports.relay;
 	}
 
 	async startServer() {

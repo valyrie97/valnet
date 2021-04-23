@@ -11,7 +11,7 @@
       "35.196.210.135:5600"
     ]
   },
-  "name": "electron-react-boilerplate",
+  "name": "valnet",
   "productName": "ElectronReact",
   "description": "Electron application boilerplate based on React, React Router, Webpack, React Fast Refresh for rapid application development",
   "scripts": {

@@ -7,6 +7,8 @@ module.exports = {
 	},
 	"endpoints": [
 		"valnet.xyz:5500",
-		"35.196.210.135:5600"
+		"nightly.valnet.xyz:5600",
+		"canary.valnet.xyz:5600",
+		"stable.valnet.xyz:5600"
 	]
 }
