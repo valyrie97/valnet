@@ -3,7 +3,9 @@ import { execSync, spawn } from 'child_process';
 import Datastore from 'nedb';
 import { config } from '../src/lib/config/index.js';
 import express from 'express';
+import Volatile from 'volatile';
 
+const logLock = new Volatile({});
 
 (async () => {
 
@@ -56,6 +58,7 @@ setInterval(function update() {
 	proc = spawn('node', ['./relay/index.mjs'], {
 		stdio: 'pipe'
 	});
+	appendLogs('relay', 'STARTED', 'event');
 
 	proc.stdout.on('data', (data) => {
 		process.stdout.write(data);
@@ -68,6 +71,7 @@ setInterval(function update() {
 	});
 
 	proc.on('exit', () => {
+		appendLogs('relay', 'STOPPED', 'event');
 		logp('relay exitted');
 		logp('attempting to fetch new version');
 
@@ -88,16 +92,67 @@ function logp(message, type = 'info') {
 }
 
 function appendLogs(source, data, type = 'output') {
-	logs.insert({
-		message: data.toString(),
-		type: type,
-		src: source,
-		timestamp: new Date().getTime()
+	logLock.lock(function(lock) {
+		return new Promise(res => {
+			logs.insert({
+				message: data.toString(),
+				type: type,
+				src: source,
+				timestamp: new Date().getTime()
+			}, (err, doc) => {
+				res(lock);
+			})
+		})
 	})
 }
 
+function getSessions() {
+	return new Promise(res => {
+		logs.find({
+			type: 'event',
+			message: { $in: ['STARTED', 'STOPPED'] }
+		}, {}, (err, docs) => {
+			const sessions = [];
+			let start = null;
+			for(const event of docs) {
+				if(event.message === 'STARTED') {
+					if (start !== null) {
+						sessions.push({
+							started: start,
+							stopped: event.timestamp
+						});
+					}
+					start = event.timestamp;
+				}
+				if(event.message === 'STOPPED' && start !== null) {
+					sessions.push({
+						started: start,
+						stopped: event.timestamp
+					});
+					start = null;
+				}
+			}
+			sessions.sort((a, b) => a.started > b.started);
+			res(sessions);
+		});
+	});
+}
+
 app.get('/', (req, res) => {
-	res.end('<a href="/logs">Logs</a>');
+	res.end(`
+		<a href="/logs">Logs</a><br>
+		<a href="/api/sessions">Sessions</a><br>
+		<a href="/restart">Restart</a>
+	`);
+})
+
+app.get('/restart', async (req, res) => {
+	proc.kill();
+	res.redirect('/');
+})
+
+app.get('/api/sessions.json', async (req, res) => {
+	res.json(await getSessions());
 })
 
 app.get('/logs', (req, res) => {
@@ -159,6 +214,11 @@ ${messages.join('').replace(/\u001B\[.*?[A-Za-z]/g, '')}
 			</script>
 		</body>
 		</html>`;
+	},
+	Json(obj) {
+		return `<pre>
+${JSON.stringify(obj, null, 2)}
+		</pre>`
 	}
 };
 
