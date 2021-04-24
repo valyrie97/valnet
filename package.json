@@ -15,7 +15,7 @@
   "productName": "ElectronReact",
   "description": "Electron application boilerplate based on React, React Router, Webpack, React Fast Refresh for rapid application development",
   "scripts": {
-    "postinstall": "node -r @babel/register .erb/scripts/CheckNativeDep.js && electron-builder install-app-deps && yarn cross-env NODE_ENV=development webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.babel.js && opencollective-postinstall && yarn-deduplicate yarn.lock",
+    "prep": "node -r @babel/register .erb/scripts/CheckNativeDep.js && electron-builder install-app-deps && yarn cross-env NODE_ENV=development webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.babel.js && opencollective-postinstall && yarn-deduplicate yarn.lock",
     "build": "concurrently \"yarn build:main\" \"yarn build:renderer\"",
     "build:main": "cross-env NODE_ENV=production webpack --config ./.erb/configs/webpack.config.main.prod.babel.js",
     "build:renderer": "cross-env NODE_ENV=production webpack --config ./.erb/configs/webpack.config.renderer.prod.babel.js",
@@ -26,6 +26,7 @@
     "start:main": "cross-env NODE_ENV=development electron -r ./.erb/scripts/BabelRegister ./src/main.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development webpack serve --config ./.erb/configs/webpack.config.renderer.dev.babel.js",
     "test": "jest",
+    "supervisor": "supervisor",
     "relay": "supervisor -w relay,src -n exit relay/index.mjs",
     "relay:service": "supervisor -w relay,src -- relay/service.mjs",
     "sloc": "find lib -type f | xargs wc -l"
@@ -251,6 +252,7 @@
     "electron-debug": "^3.1.0",
     "electron-log": "^4.2.4",
     "electron-updater": "^4.3.4",
+    "express-ws": "^4.0.0",
     "font-ascii": "^1.2.1",
     "gradient-string": "^1.2.0",
     "history": "^5.0.0",
@@ -275,7 +277,7 @@
     "volatile": "^7.0.1"
   },
   "devEngines": {
-    "node": ">=10.x",
+    "node": ">=16.x",
     "npm": ">=6.x",
     "yarn": ">=1.21.3"
   },
