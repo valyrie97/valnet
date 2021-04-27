@@ -1,3 +1,4 @@
+
 // imports that arent installed...
 import { execSync, spawn } from 'child_process';
 import { config } from '../src/lib/config/index.js';
@@ -15,6 +16,11 @@ async function doExternalImports() {
 }
 
 (async function bootloader() {
+	console.log('===================================');
+	console.log('  Valnet Relay Service Bootloader');
+	console.log('===================================');
+	console.log('These messages won\'t appear in the logs...')
+	console.log('installing packages...');
 	let yarnOutput = "";
 	try {
 		// sanity install packages...
@@ -25,6 +31,7 @@ async function doExternalImports() {
 		// this is also why we dynamically
 		// load the dependencies...
 		yarnOutput += execSync(`yarn`);
+		console.log(yarnOutput);
 	} catch {
 		enterRecoveryMode(yarnOutput);
 		return;
@@ -38,12 +45,21 @@ async function doExternalImports() {
 	startService();
 })();
 
-
 async function startService() {
 	const logLock = new external.Volatile({});
 	const log = external.Signale.scope('SRVC');
 	const branch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
 	let proc;
+	let suppressRestart = false;
+	process.on('SIGTERM', () => {
+		if(proc) {
+			logp('killing child process');
+			suppressRestart = true;
+			proc.kill();
+		}
+
+		process.exit(0);
+	});
 	const logs = new external.Datastore({
 		filename: 'svc.log',
 		autoload: true
@@ -52,43 +68,43 @@ async function startService() {
 	external.expressWs(app);
 	const logEvents = new EventEmitter();
 
-	logp('==================================');
+	logp('===================================');
 	logp('Starting Valnet Node as a Service!');
 	logp('Syncing to branch: ' + branch);
 	logp('===================================');
-	logp('= = = = = = = = = = = = = = = = = =');
-	logp('=  =  =  =  =  =  =  =  =  =  =  = ');
-	logp('=   =   =   =   =   =   =   =   =  ');
-	logp('=    =    =    =    =    =    =    ');
-	logp('=     =     =     =     =     =    ');
+	logp('Logging service started...');
 
-	setInterval(function update() {
-		const remoteHash = execSync('git ls-remote https://github.com/marcus13345/valnet.git').toString()
-			.split('\n')
-			.filter(test => {
-				return test.trim().endsWith(branch);
-			})[0]
-			.split('\t')[0]
-			.trim();
-		const localHash = execSync(`git rev-parse ${branch}`).toString().trim();
-		if(remoteHash !== localHash) {
-			logp(`remote hash: ${remoteHash}`);
-			logp(`local hash: ${localHash}`);
+	(function update() {
+		try {
+			const remoteHash = execSync('git ls-remote https://github.com/marcus13345/valnet.git').toString()
+				.split('\n')
+				.filter(test => {
+					return test.trim().endsWith(branch);
+				})[0]
+				.split('\t')[0]
+				.trim();
+			const localHash = execSync(`git rev-parse ${branch}`).toString().trim();
+			if(remoteHash !== localHash) {
+				logp(`remote hash: ${remoteHash}`);
+				logp(`local hash: ${localHash}`);
 
-			logp('killing relay...');
-			try {
-				proc.kill();
-			} catch (e) {
-				logp('failed to kill active relay...', 'error');
-				logp(e, 'error');
+				logp('killing relay...');
+				try {
+					proc.kill();
+				} catch (e) {
+					logp('failed to kill active relay...', 'error');
+					logp(e, 'error');
+				}
 			}
-		}
-	}, 5000);
+		} catch {}
+		setTimeout(update, 5000);
+	})();
 
 	(function keepAlive() {
 		proc = spawn('node', ['./relay/index.mjs'], {
 			stdio: 'pipe',
 			env: {
+				...process.env,
 				FORCE_COLOR: true
 			}
 		});
@@ -113,10 +129,12 @@ async function startService() {
 			appendLogs('update', execSync(`git pull`));
 			appendLogs('yarn', execSync(`yarn`));
 
-			logp('restarting...')
-			setTimeout(() => {
-				keepAlive();
-			}, 1000);
+			if(!suppressRestart) {
+				logp('restarting...');
+				setTimeout(() => {
+					keepAlive();
+				}, 1000);
+			}
 		})
 	})();
 
@@ -188,7 +206,11 @@ async function startService() {
 	})
 
 	app.get('/logs', (req, res) => {
-		// res.redirect(`/logs/${Date.now() - (1000 * 60 * 60 * 24)}`)
+		const sessions = getSessions();
+
+	});
+
+	app.get('/logs/:start', (req, res) => {
 		res.end(Template.realtimeLogs());
 	})
 
@@ -236,12 +258,12 @@ function enterRecoveryMode(message) {
 	}).listen(config.ports.service);
 }
 
-
-
 const Template = {
+	style() {
+		return `<style> html { background: #0E1419; color: #F8F8F2; } </style>`
+	},
 	logs(messages) {
 		return `
-		<style> html { background: #0E1419; color: #F8F8F2; } </style>
 		<pre>
 ${messages.join('').replace(/\u001B\[.*?[A-Za-z]/g, '')}
 		</pre>
@@ -250,7 +272,6 @@ ${messages.join('').replace(/\u001B\[.*?[A-Za-z]/g, '')}
 	},
 	realtimeLogs() {
 		return `
-		<style> html { background: #0E1419; color: #F8F8F2; } </style>
 		<pre></pre>
 		<br><br><br><br><br><br>
 		<script>
